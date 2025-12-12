@@ -444,17 +444,47 @@ function utmExtractor() {
         notifikationBesked: '',
 
         extractUTM() {
-            if (!this.inputUrl) { this.vis('Indsæt en gyldig URL'); return; }
+            if (!this.inputUrl) { 
+                this.vis('Indsæt en gyldig URL'); 
+                return; 
+            }
+
             try {
-                let url = /^https?:\/\//i.test(this.inputUrl) ? this.inputUrl : 'https://' + this.inputUrl;
+                let url = /^https?:\/\//i.test(this.inputUrl) 
+                    ? this.inputUrl 
+                    : 'https://' + this.inputUrl;
+
                 const u = new URL(url);
                 this.utmParams = [];
+
+                // Navneforbedring til UI
+                const renameMap = {
+                    'utm_campaign_code': 'UTM Campaign code',
+                    'utm_campaign_code_recurring': 'UTM Campaign code recurring',
+                    'campaign_code': 'Campaign code',
+                    'campaign_code_recurring': 'Campaign code recurring'
+                };
+
+                // Gennemgå ALLE query params
                 u.searchParams.forEach((value, key) => {
-                    if (key.startsWith('utm_') || key === 'anker') {
-                        this.utmParams.push({ key, value });
+                    if (
+                        key.startsWith('utm_') ||
+                        key === 'anker' ||
+                        key in renameMap
+                    ) {
+                        let displayKey = renameMap[key] || key;
+                        this.utmParams.push({
+                            key: displayKey,
+                            value: value
+                        });
                     }
                 });
-                if (!this.utmParams.length) this.utmParams = [{ key: '-', value: '-' }];
+
+                // Hvis intet fundet
+                if (!this.utmParams.length) {
+                    this.utmParams = [{ key: '-', value: '-' }];
+                }
+
                 this.vis('UTM parametre hentet');
             } catch {
                 this.vis('Ugyldig URL');
@@ -473,6 +503,7 @@ function utmExtractor() {
         }
     };
 }
+
 </script>
 
 
