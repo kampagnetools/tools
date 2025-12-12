@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hjælpeværktøj</title>
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.0/dist/cdn.min.js" defer></script>
+<style>
+:root {--bg: #f0f0f0;--card-bg: #fff;--text: #1e1e1e;--accent: #e30613;--input-bg: #fff;--input-border: #ccc;--button-bg: #e30613;--button-hover: #c20511;--table-bg: #fff;--table-border: #e5e7eb;--table-th-bg: #f9f9f9;}body.dark-theme {--bg: #111;--card-bg: #1a1a1a;--text: #fff;--input-bg: #222;--input-border: #444;--table-bg: #1a1a1a;--table-border: #444;--table-th-bg: #222;}body {display: flex;justify-content: center;align-items: flex-start;min-height: 100vh;margin: 0;padding-top: 60px;background: var(--bg);color: var(--text);font-family: 'Segoe UI', Arial, sans-serif;overflow-x: hidden;}.app {max-width: 950px;width: 90%;padding: 20px 30px;border-radius: 12px;background: var(--card-bg);box-sizing: border-box;box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);}h2 {margin-bottom: 24px;color: var(--accent);font-size: 2.2rem;font-weight: 700;text-transform: uppercase;}.theme-switch {position: fixed;top: 16px;right: 16px;z-index: 999;}.nav-buttons {display: flex;gap: 12px;margin-bottom: 20px;flex-wrap: wrap;}.nav-buttons button {padding: 12px 20px;flex: 1;min-width: 120px;border: none;border-radius: 12px;background: var(--button-bg);color: #fff;cursor: pointer;font-weight: 600;font-size: 16px;transition: 0.2s, transform 0.1s;}.nav-buttons button:hover {background: var(--button-hover);transform: scale(1.03);}.nav-buttons button.active {background: #222;transform: none;}.kampagne-controls {display: grid;grid-template-columns: 1fr 1fr;gap: 1rem;margin-bottom: 12px;}.field {margin-bottom: 16px;display: flex;flex-direction: column;}.field label {font-weight: 600;margin-bottom: 6px;font-size: 16px;}input, select, textarea {padding: 12px 14px;border: 1px solid var(--input-border);border-radius: 10px;font-size: 16px;width: 100%;background: var(--input-bg);color: var(--text);box-sizing: border-box;}select {appearance: none;background: var(--input-bg) url('data:image/svg+xml;utf8,<svg fill="%231e1e1e" height="16" viewBox="0 0 24 24" width="16"><path d="M7 10l5 5 5-5H7z"/></svg>') no-repeat right 16px center;background-size: 16px;padding-right: 40px;cursor: pointer;}textarea {resize: vertical;}table {width: 100%;border-collapse: collapse;margin-top: 10px;font-size: 14px;border-radius: 8px;overflow: hidden;}th, td {border: 1px solid var(--table-border);padding: 8px;text-align: left;vertical-align: middle;}th {background: var(--table-th-bg);}.link-card {padding: 16px;border-radius: 12px;background: var(--table-bg);margin-bottom: 16px;box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);}.generate {background: var(--accent);color: #fff;padding: 12px 20px;border-radius: 12px;border: none;font-size: 16px;font-weight: 600;cursor: pointer;display: flex;justify-content: space-between;align-items: center;transition: 0.2s, transform 0.1s;width: 100%;}.generate:hover {background: #c20511;}input.disabled {background-color: var(--input-bg);color: #888;cursor: not-allowed;opacity: 0.5;}.copy-icon {margin-left: 4px;color: #888;cursor: pointer;}.copy-icon:hover {color: var(--accent);}.notifikation {position: fixed;bottom: 20px;right: 20px;background: var(--accent);color: #fff;padding: 10px 16px;border-radius: 8px;font-size: 14px;opacity: 0;transition: opacity 0.3s;z-index: 9999;}.notifikation.show {opacity: 1;}.segmented-control, .nav-segmented {display: flex;width: 100%;border: 2px solid var(--input-border);border-radius: 12px;overflow: hidden;font-weight: 600;background: var(--card-bg);}.segmented-control button, .nav-segmented button {flex: 1;padding: 0.65rem 0;border: none;background: var(--card-bg);color: var(--text);cursor: pointer;transition: background 0.2s, color 0.2s;}.segmented-control button + button, .nav-segmented button + button {border-left: 1px solid var(--input-border);}.segmented-control button.active, .nav-segmented button.active {background: var(--accent);color: #fff;font-weight: 700;}.segmented-control button:first-child, .nav-segmented button:first-child {border-top-left-radius: 10px;border-bottom-left-radius: 10px;}.segmented-control button:last-child, .nav-segmented button:last-child {border-top-right-radius: 10px;border-bottom-right-radius: 10px;}.segmented-control button:not(.active):hover, .nav-segmented button:not(.active):hover {background: rgba(227, 6, 19, 0.1);}.expandable-panel {position: absolute;left: 0;margin-top: 8px;width: 100%;background: var(--card-bg);border: 1px solid var(--input-border);border-radius: 12px;box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);padding: 16px;overflow: hidden;z-index: 50;}@media (max-width: 768px) {.kampagne-controls {grid-template-columns: 1fr;gap: 0.75rem;}.nav-buttons {display: none;}.app {padding: 20px;}h2 {font-size: 1.8rem;}table {font-size: 13px;}}@media (max-width: 480px) {.segmented-control, .nav-segmented {font-size: 0.9rem;}input, select, textarea {font-size: 14px;padding: 10px;}.generate {font-size: 14px;padding: 10px;}h2 {font-size: 1.5rem;}}.absolute.left-0.mt-2.w-full.bg-white.dark\:bg-gray-900.border.border-gray-300.dark\:border-gray-700.rounded-xl.shadow-lg.p-4.z-50.flex.flex-col.gap-4 {margin-top: 20px;}
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.2s;
+  border-radius: 20px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  transition: 0.2s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #e30613; 
+}
+
+input:checked + .slider:before {
+  transform: translateX(16px);
+}
+
+.slider.round {
+  border-radius: 20px;
+}       
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+.switch-text {
+  margin-bottom: 8px;
+}
+</style>
+</head>
+<body class="dark-theme" x-data="dashboardApp()">
+
+<div class="theme-switch">
+  <label class="switch"><input type="checkbox" checked @change="document.body.classList.toggle('dark-theme', $event.target.checked)"><span class="slider"></span></label>
+</div>
+
+<div class="app">
+<h2>Hjælpeværktøj</h2>
+
+<div class="nav-buttons">
+  <button :class="{'active': activeApp==='utm'}" @click="activeApp='utm'">UTM Builder</button>
+  <button :class="{'active': activeApp==='sms'}" @click="activeApp='sms'">SMS Tæller</button>
+  <button :class="{'active': activeApp==='extractor'}" @click="activeApp='extractor'">UTM Extractor</button>
+</div>
+
+<div class="nav-segmented" x-show="window.innerWidth<=768">
+  <button :class="{'active': activeApp==='utm'}" @click="activeApp='utm'">UTM</button>
+  <button :class="{'active': activeApp==='sms'}" @click="activeApp='sms'">SMS</button>
+  <button :class="{'active': activeApp==='extractor'}" @click="activeApp='extractor'">Extractor</button>
+</div>
+
+<div x-show="activeApp==='utm'" x-data="utmBuilder()">
+  <div class="field">
+    <label>Basis-URL</label>
+    <input type="text" x-model="basisUrl" placeholder="www.msf.dk/stoet/gaza">
+  </div>
+
+  <div class="field">
+    <label>Kanal</label>
+    <select x-model="kanal" @change="kanalChanged()">
+      <option value="">Vælg kanal</option>
+      <template x-for="(gruppe, overskrift) in kanalMap" :key="overskrift">
+        <optgroup :label="overskrift">
+          <template x-for="(info, kanalKey) in gruppe" :key="kanalKey">
+            <option :value="kanalKey" x-text="kanalKey"></option>
+          </template>
+        </optgroup>
+      </template>
+    </select>
+  </div>
+
+  <div class="field" style="position:relative;">
+  <label>Kampagnenavn</label>
+  <input type="text" 
+         x-model="kampagneNavn" 
+         :disabled="!aktiverKampagneNavn" 
+         :class="{'disabled': !aktiverKampagneNavn}" 
+         placeholder="Valgfri kampagnenavn">
+  
+  <div style="position:absolute; right:12px; top:38px; display:flex; align-items:center;">
+    <span class="switch-text" style="margin-right:6px; font-size:14px; color:#888;">Aktivér</span>
+    <label class="switch">
+      <input type="checkbox" x-model="aktiverKampagneNavn">
+      <span class="slider round"></span>
+    </label>
+  </div>
+</div>
+
+
+  <div class="kampagne-controls">
+    <div class="field">
+  <label>Kampagnetype</label>
+  <div class="segmented-control">
+    <button 
+      :class="{ 'active': kampagneType==='feltpartner_nyhedsbrev' }" 
+      @click="kampagneType='feltpartner_nyhedsbrev'; opdaterKampagnekode()">
+      Feltpartner
+    </button>
+    <button 
+      :class="{ 'active': kampagneType==='oneoff_nyhedsbrev' }" 
+      @click="kampagneType='oneoff_nyhedsbrev'; opdaterKampagnekode()">
+      One-off
+    </button>
+  </div>
+</div>
+
+    <div class="field">
+      <label>Øremærket</label>
+      <div class="segmented-control">
+        <button :class="{ 'active': oeremaerkeType==='ja' }" @click="setOeremaerke('ja')">Ja</button>
+        <button :class="{ 'active': oeremaerkeType==='nej' }" @click="setOeremaerke('nej')">Nej</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Kampagnekode</label>
+    <input type="text" x-model="kampagne" :disabled="oeremaerkeType==='nej'" :class="{'disabled':oeremaerkeType==='nej'}" placeholder="f.eks. 3799" @input="kampagne=kampagne.replace(/[^0-9]/g,'').slice(0,4)">
+  </div>
+
+
+
+  <div x-data="{ open:false }" class="field relative">
+    <button 
+      @click="open = !open" 
+      class="generate" 
+      style="width:100%; transition:background .2s; transform:none;">
+      Flere indstillinger 
+      <span x-text="open ? '▲' : '▼'" class="transition-transform duration-300" :class="{'rotate-180': open}"></span>
+    </button>
+
+    <div 
+      x-show="open" 
+      x-transition:enter="transition ease-out duration-300"
+      x-transition:enter-start="opacity-0 -translate-y-2"
+      x-transition:enter-end="opacity-100 translate-y-0"
+      x-transition:leave="transition ease-in duration-200"
+      x-transition:leave-start="opacity-100 translate-y-0"
+      x-transition:leave-end="opacity-0 -translate-y-2"
+      @click.outside="open=false"
+      class="absolute left-0 mt-2 w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-xl shadow-lg p-4 z-50 flex flex-col gap-4"
+      style="overflow:hidden;"
+    >
+      <div class="field">
+        <label>Indhold</label>
+        <select x-model="utmContent">
+          <option value="">Ingen</option>
+          <template x-for="i in antalVersioner" :key="i">
+            <option :value="'v'+i" x-text="'v'+i"></option>
+          </template>
+        </select>
+      </div>
+      
+      
+
+      <div class="field">
+        <label>Antal versioner</label>
+        <select x-model.number="antalVersioner">
+          <template x-for="v in 10" :key="v"><option :value="v" x-text="v"></option></template>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Anker</label>
+        <select x-model="anker">
+          <option value="">Ingen</option>
+          <option value="top">top</option>
+          <option value="video">video</option>
+          <option value="contact">contact</option>
+          <option value="footer">footer</option>
+        </select>
+      </div>
+     <div class="field">
+  <label>Nødsituation</label>
+  <div class="segmented-control">
+    <button :class="{ 'active': emergency === 'yes' }" @click="emergency='yes'">Ja</button>
+    <button :class="{ 'active': emergency === 'no' }" @click="emergency='no'">Nej</button>
+  </div>
+</div>
+    </div>
+  </div>
+
+  <button class="generate" @click="genererLinks()">Generér links</button>
+  <template x-if="links.length">
+    <div style="margin-top:12px;">
+      <template x-for="(l,i) in links" :key="i">
+        <div class="link-card">
+          <div class="field">
+            <label>Færdig URL</label>
+            <input type="text" :value="l.url" readonly @click="$clipboard(l.url); vis('URL kopieret!')" style="cursor:pointer;">
+          </div>
+          <table>
+            <thead><tr><th>Parameter</th><th>Værdi</th></tr></thead>
+            <tbody>
+              <template x-for="item in Object.keys(l).map(k => ({key:k,value:l[k]}))" :key="item.key">
+                <tr x-show="item.key.startsWith('utm_') || item.key==='anker' || item.key==='utm_campaign_code' || item.key==='utm_campaign_code_recurring'">
+                  <td><span @click="$clipboard(item.key+'='+item.value); vis('Kopieret '+item.key)" x-text="item.key"></span></td>
+                  <td><span @click="$clipboard(item.value); vis('Kopieret')" x-text="item.value"></span></td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+      </template>
+    </div>
+  </template>
+  <div class="notifikation" :class="{show: visNotifikation}" x-text="notifikationBesked"></div>
+</div>
+
+<div x-show="activeApp==='sms'" x-data="smsCounter()">
+  <div class="field"><label>SMS tekst</label><textarea rows="6" x-model="tekst" placeholder="Skriv din SMS her..."></textarea></div>
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
+    <div>Antal tegn: <span x-text="antalTegn"></span><br>Antal SMS'er: <span x-text="antalSms"></span></div>
+    <div x-show="antalTegn>160" style="color:#f44336;font-weight:bold;">⚠ SMS vil blive delt i <span x-text="antalSms"></span> dele</div>
+  </div>
+  <div style="height:10px;background:#eee;border-radius:6px;overflow:hidden;margin-top:8px;">
+    <div :style="{width:(antalTegn>160?100:(antalTegn/160*100))+'%',background:antalTegn<100?'#4caf50':antalTegn<140?'#ffeb3b':antalTegn<160?'#ff9800':'#f44336',height:'100%',transition:'width .2s linear, background .3s ease'}"></div>
+  </div>
+</div>
+
+<div x-show="activeApp==='extractor'" x-data="utmExtractor()">
+  <div class="field"><label>Indsæt URL</label><input type="text" x-model="inputUrl" placeholder="www.msf.dk/..."></div>
+  <button class="generate" @click="extractUTM()">Hent UTM</button>
+  
+  <template x-if="utmParams.length">
+    <table style="margin-top:12px;">
+      <thead><tr><th>Parameter</th><th>Værdi</th></tr></thead>
+      <tbody>
+        <template x-for="(p,i) in utmParams" :key="i">
+          <tr>
+            <td><span @click="$clipboard(p.key+'='+p.value); vis('Kopieret '+p.key)" x-text="p.key"></span></td>
+            <td><span @click="$clipboard(p.value); vis('Kopieret')" x-text="p.value"></span></td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+  </template>
+  <div class="notifikation" :class="{show: visNotifikation}" x-text="notifikationBesked"></div>
+</div>
+
+<script>
+function dashboardApp() {
+    return {
+        activeApp: 'utm'
+    };
+}
+
+function utmBuilder() {
+    return {
+        basisUrl: '',
+        kanal: '',
+        kampagne: '',
+        kampagneNavn: '',
+        aktiverKampagneNavn: false,
+        emergency: 'no',
+        kampagneType: '',
+        utmContent: '',
+        anker: '',
+        oeremaerkeType: 'nej',
+        links: [],
+        antalVersioner: 1,
+        previousAnchors: {},
+        kanalMap: {
+            'Email og SMS': {
+                'Email': { source: 'sfmc', medium: 'email' },
+                'SMS': { source: 'sfmc', medium: 'sms' }
+            },
+            'Meta': {
+                'Meta Paid': { source: 'facebook', medium: 'paid_social' },
+                'Meta Organisk': { source: 'facebook', medium: 'organic_social' },
+                'Facebook Organisk': { source: 'facebook', medium: 'organic_social' },
+                'Instagram Organisk': { source: 'instagram', medium: 'organic_social' }
+            },
+            'Google': {
+                'Google Ads': { source: 'google', medium: 'cpc' },
+                'Google Display': { source: 'google', medium: 'display' },
+                'YouTube Paid': { source: 'youtube', medium: 'paid_video' }
+            },
+            'LinkedIn': {
+                'LinkedIn Paid': { source: 'linkedin', medium: 'paid_social' },
+                'LinkedIn Organisk': { source: 'linkedin', medium: 'organic_social' }
+            },
+            'Microsoft Ads': {
+                'Bing Ads': { source: 'bing', medium: 'cpc' }
+            },
+            'Andre Kanaler': {
+                'Referral': { source: 'referral', medium: 'referral' },
+                'Print': { source: 'offline', medium: 'offline' },
+                'Outdoor': { source: 'offline', medium: 'offline' }
+            }
+        },
+
+        kanalChanged() {
+            this.kampagne = '';
+            this.oeremaerkeType = 'nej';
+            this.links = [];
+        },
+
+        opdaterKampagnekode() {
+            if (this.oeremaerkeType === 'nej') this.kampagne = '';
+        },
+
+        setOeremaerke(val) {
+            this.oeremaerkeType = val;
+            this.links = [];
+            if (val === 'nej') this.kampagne = '';
+        },
+
+        tilfoejParametre(url, params) {
+            if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+            const u = new URL(url);
+            Object.entries(params).forEach(([key, value]) => value && u.searchParams.set(key, value));
+            return u.toString();
+        },
+
+     genererLinks() {
+    if (!this.basisUrl) { this.vis('Indtast en gyldig basis-URL'); return; }
+    if (!this.kanal) { this.vis('Vælg kanal'); return; }
+    if (!this.kampagneType) { this.vis('Vælg kampagnetype'); return; }
+    if (this.oeremaerkeType === 'ja' && !this.kampagne) { this.vis('Udfyld kampagnekode for øremærket kampagne'); return; }
+
+    this.links = [];
+    for (let i = 1; i <= this.antalVersioner; i++) {
+        let version = this.antalVersioner > 1 ? 'v' + i : '';
+        let ankerValue = this.previousAnchors[i] || this.anker || '';
+        this.previousAnchors[i] = ankerValue;
+
+        // Find kanalinfo fra kanalMap
+        let kanalInfo = {};
+        for (let gruppe of Object.values(this.kanalMap)) {
+            if (this.kanal in gruppe) {
+                kanalInfo = gruppe[this.kanal];
+                break;
+            }
+        }
+
+        let utm_source = kanalInfo.source || '';
+        let utm_medium = kanalInfo.medium || '';
+
+        let utm_campaign_value = this.aktiverKampagneNavn && this.kampagneNavn ? this.kampagneNavn : 'NIL';
+
+        let utm_campaign_code = 2822;          
+        let utm_campaign_code_recurring = 2824;
+
+        if (this.oeremaerkeType === 'ja' && this.kampagne) {
+            if (this.kampagneType === 'oneoff_nyhedsbrev') {
+                utm_campaign_code = this.kampagne;
+            } else if (this.kampagneType === 'feltpartner_nyhedsbrev') {
+                utm_campaign_code_recurring = this.kampagne;
+            }
+        }
+
+        let params = {
+            utm_source,
+            utm_medium,
+            utm_campaign: utm_campaign_value,
+            utm_content: version,
+            utm_earmarked: this.oeremaerkeType === 'ja' ? 'yes' : 'no',
+            utm_campaign_code,
+            utm_campaign_code_recurring,
+            anker: ankerValue
+        };
+
+        if (this.emergency === 'yes') {
+    params.utm_emergency = 'yes';
+}
+
+        let fullUrl = this.tilfoejParametre(this.basisUrl, params);
+        if (ankerValue) fullUrl += '#' + ankerValue;
+
+        this.links.push({ ...params, url: fullUrl });
+    }
+
+    this.vis('Links genereret');
+},
+
+
+
+        vis(msg) {
+            this.notifikationBesked = msg;
+            this.visNotifikation = true;
+            setTimeout(() => this.visNotifikation = false, 2000);
+        },
+
+        $clipboard(text) {
+            navigator.clipboard.writeText(text);
+        },
+
+        visNotifikation: false,
+        notifikationBesked: ''
+    };
+}
+
+function smsCounter() {
+    return {
+        tekst: '',
+        get antalTegn() { return this.tekst.length; },
+        get antalSms() { return this.tekst.length === 0 ? 0 : Math.ceil(this.tekst.length / 160); }
+    };
+}
+
+function utmExtractor() {
+    return {
+        inputUrl: '',
+        utmParams: [],
+        visNotifikation: false,
+        notifikationBesked: '',
+
+        extractUTM() {
+            if (!this.inputUrl) { this.vis('Indsæt en gyldig URL'); return; }
+            try {
+                let url = /^https?:\/\//i.test(this.inputUrl) ? this.inputUrl : 'https://' + this.inputUrl;
+                const u = new URL(url);
+                this.utmParams = [];
+                u.searchParams.forEach((value, key) => {
+                    if (key.startsWith('utm_') || key === 'anker') {
+                        this.utmParams.push({ key, value });
+                    }
+                });
+                if (!this.utmParams.length) this.utmParams = [{ key: '-', value: '-' }];
+                this.vis('UTM parametre hentet');
+            } catch {
+                this.vis('Ugyldig URL');
+                this.utmParams = [];
+            }
+        },
+
+        vis(msg) {
+            this.notifikationBesked = msg;
+            this.visNotifikation = true;
+            setTimeout(() => this.visNotifikation = false, 2000);
+        },
+
+        $clipboard(text) {
+            navigator.clipboard.writeText(text);
+        }
+    };
+}
+</script>
+
+
+
+
+</body>
+</html>
