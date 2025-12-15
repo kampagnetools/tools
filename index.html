@@ -276,6 +276,7 @@ input:checked + .slider:before {
 </div>
 
 <script>
+//Ryd venligst op
 function dashboardApp() {
     return {
         activeApp: 'utm'
@@ -457,7 +458,7 @@ function utmExtractor() {
                 const u = new URL(url);
                 this.utmParams = [];
 
-                // Navneforbedring til UI
+                // LLJ - Find nemmere navne
                 const renameMap = {
                     'utm_campaign_code': 'UTM Campaign code',
                     'utm_campaign_code_recurring': 'UTM Campaign code recurring',
@@ -465,7 +466,7 @@ function utmExtractor() {
                     'campaign_code_recurring': 'Campaign code recurring'
                 };
 
-                // Gennemgå ALLE query params
+                // Gennemgå all parametre
                 u.searchParams.forEach((value, key) => {
                     if (
                         key.startsWith('utm_') ||
@@ -480,7 +481,7 @@ function utmExtractor() {
                     }
                 });
 
-                // Hvis intet fundet
+                // Ej fundet
                 if (!this.utmParams.length) {
                     this.utmParams = [{ key: '-', value: '-' }];
                 }
@@ -503,7 +504,6 @@ function utmExtractor() {
         }
     };
 }
-
 </script>
 
 
